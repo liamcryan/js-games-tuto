@@ -21,6 +21,8 @@
     var lives = 3;
     var livesText;
     var lifeLostText;
+    var playing = false;
+    var startButton;
 
     function preload() {
       game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -31,6 +33,7 @@
       game.load.image('paddle', 'img/paddle.png');
       game.load.image('brick', 'img/brick.png');
       game.load.spritesheet('ball', 'img/wobble.png', 20, 20);
+      game.load.spritesheet('button', 'img/button.png', 120, 40);
     }
     function create() {
       game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -41,7 +44,6 @@
       ball.checkWorldBounds = true;
       ball.events.onOutOfBounds.add(ballLeaveScreen, this);
       game.physics.enable(ball, Phaser.Physics.ARCADE);
-      ball.body.velocity.set(150, -150);
       ball.body.collideWorldBounds = true;
       ball.body.bounce.set(1);
       ball.animations.add('wobble', [0, 1, 0, 2, 0, 1, 0, 2, 0], 24);
@@ -63,6 +65,13 @@
       lifeLostText = game.add.text(game.world.width*0.5, game.world.height*0.5, 'Life lost, click to continue', textStyle);
       lifeLostText.anchor.set(0.5);
       lifeLostText.visible = false;
+
+      startButton = game.add.button(game.world.width*0.5, game.world.height*0.5, 'button', function(){
+        startButton.destroy();
+        ball.body.velocity.set(150, -150);
+        playing = true;
+      }, this, 1, 0, 2);
+      startButton.anchor.set(0.5);
     }
     function update() {
       game.physics.arcade.collide(ball, paddle, function(ball, paddle){
@@ -71,15 +80,12 @@
       paddle.x = game.input.x || game.world.width * 0.5;
       game.physics.arcade.collide(ball, bricks, function(ball, brick){
         ball.animations.play('wobble');
-        // brick.kill();
         var killTween = game.add.tween(brick.scale);
         killTween.to({x:0,y:0}, 200, Phaser.Easing.Linear.None);
         killTween.onComplete.addOnce(function(){
             brick.kill();
         }, this);
         killTween.start();
-
-
         var countAlive = 0;
         for (var i=0; i<bricks.children.length; i++) {
           if (bricks.children[i].alive == true) {
@@ -91,7 +97,11 @@
           location.reload();
         }
       });
-
+      if (playing){
+        paddle.x = game.input.x;
+      } else {
+        paddle.x = game.world.width*0.5;
+      }
     }
 
     function initBricks() {
