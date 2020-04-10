@@ -28,6 +28,7 @@
   var paddleX = (canvas.width - paddleWidth) / 2;
   var rightPressed = false;
   var leftPressed = false;
+  var intervalSpeed = 10;
 
   document.addEventListener("keydown", keyDownHandler, false);
   document.addEventListener("keyup", keyUpHandler, false);
@@ -61,6 +62,12 @@
     ballColor = getRandomColor();
   }
 
+  function speedUpBall() {
+    intervalSpeed -= .5;
+    clearInterval(interval);
+    interval = setInterval(draw, intervalSpeed);
+  }
+
   function drawBall() {
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI*2);
@@ -82,13 +89,24 @@
     drawBall();
     drawPaddle();
 
-    if (y - ballRadius < 0 || y + ballRadius > canvas.height) {
-      dy = -dy;
-      changeBallColorToRandomColor();
-    }
     if (x - ballRadius < 0 || x + ballRadius > canvas.width) {
       dx = - dx;
       changeBallColorToRandomColor();
+    }
+
+    if (y - ballRadius < 0) {
+      dy = -dy;
+      changeBallColorToRandomColor();
+    } else if (y + ballRadius > canvas.height - paddleHeight) {
+      if (paddleX < x && x < paddleX + paddleWidth) {
+        dy = -dy;
+        speedUpBall();
+      } else if (y + ballRadius > canvas.height) {
+        alert("GAME OVER");
+        document.location.reload();
+        clearInterval(interval);
+      }
+
     }
 
     if (rightPressed) {
@@ -108,7 +126,7 @@
 
   }
 
-  setInterval(draw, 10);
+  var interval = setInterval(draw, intervalSpeed);
 
 </script>
 
