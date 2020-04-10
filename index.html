@@ -40,7 +40,7 @@
   for (var c=0; c<brickColumnCount; c++) {
     bricks[c] = [];
     for(var r=0;r<brickRowCount; r++) {
-      bricks[c][r] = {x: 0, y: 0};
+      bricks[c][r] = {x: 0, y: 0, color:  getRandomColor()};
     }
   }
 
@@ -54,7 +54,7 @@
     else if(e.key == "Left" || e.key == "ArrowLeft") {
         leftPressed = true;
     }
-}
+  }
   function keyUpHandler(e){
     if (e.key == "Right" || e.key == "ArrowRight") {
       rightPressed = false;
@@ -105,9 +105,10 @@
         var brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
+
         ctx.beginPath();
         ctx.rect(brickX, brickY, brickWidth, brickHeight);
-        ctx.fillStyle = "#0095DD"
+        ctx.fillStyle = bricks[c][r].color;
         ctx.fill();
         ctx.closePath();
       }
