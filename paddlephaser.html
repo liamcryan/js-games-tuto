@@ -76,6 +76,7 @@
     function update() {
       game.physics.arcade.collide(ball, paddle, function(ball, paddle){
         ball.animations.play('wobble');
+        ball.body.velocity.x = -1*5*(paddle.x-ball.x);
       });
       paddle.x = game.input.x || game.world.width * 0.5;
       game.physics.arcade.collide(ball, bricks, function(ball, brick){
