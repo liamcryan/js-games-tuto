@@ -18,13 +18,13 @@
   var ctx = canvas.getContext("2d");
   var x = canvas.width / 2;
   var y = canvas.height - 30;
-  var dx = 2;
-  var dy = -2;
+  var dx = 1;
+  var dy = -1;
   var ballRadius = 10;
   var ballColor = "#0095DD";
   var paddleColor = "#0095DD";
   var paddleHeight = 10;
-  var paddleWidth = 105;
+  var paddleWidth = 150;
   var paddleX = (canvas.width - paddleWidth) / 2;
   var rightPressed = false;
   var leftPressed = false;
@@ -47,6 +47,14 @@
 
   document.addEventListener("keydown", keyDownHandler, false);
   document.addEventListener("keyup", keyUpHandler, false);
+  document.addEventListener("mousemove", mouseMoveHandler, false);
+
+  function mouseMoveHandler(e) {
+    var relativeX = e.clientX - canvas.offsetLeft;
+    if (relativeX > 0 && relativeX < canvas.width) {
+      paddleX = relativeX - paddleWidth/2;
+    }
+  }
 
   function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
@@ -164,19 +172,6 @@
     } else if (y + ballRadius > canvas.height) {
       if (paddleX < x && x < paddleX + paddleWidth) {
         dy = -dy;
-        if (x < (paddleX + paddleWidth)/4) {
-          dx = -2;
-        } else if (x > 3*(paddleX + paddleWidth)/4 ) {
-          dx = 2;
-        } else {
-          if (x < 0){
-            dx = -.5;
-          } else {
-            dx = .5;
-          }
-        }
-        // if closer to edges, should go farther to l/r,
-        // if closer to middle should go less far to l/r
       } else {
         lives--;
         if (!lives) {
@@ -185,8 +180,8 @@
         } else {
           x = canvas.width/2;
           y = canvas.height - 30;
-          dx = 2;
-          dy = -2;
+          dx = 1;
+          dy = -1;
           paddleX = (canvas.width - paddleWidth)/2;
         }
       }
