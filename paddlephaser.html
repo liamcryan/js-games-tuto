@@ -61,6 +61,17 @@
         brick.kill();
         score += 10;
         scoreText.setText('Points: '+score);
+
+        var countAlive = 0;
+        for (var i=0; i<bricks.children.length; i++) {
+          if (bricks.children[i].alive == true) {
+            countAlive++;
+          }
+        }
+        if (countAlive == 0) {
+          alert('You won the game, congratulations!');
+          location.reload();
+        }
       });
 
     }
