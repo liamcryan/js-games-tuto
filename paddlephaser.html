@@ -80,6 +80,7 @@
       });
       paddle.x = game.input.x || game.world.width * 0.5;
       game.physics.arcade.collide(ball, bricks, function(ball, brick){
+
         ball.animations.play('wobble');
         var killTween = game.add.tween(brick.scale);
         killTween.to({x:0,y:0}, 200, Phaser.Easing.Linear.None);
@@ -87,12 +88,17 @@
             brick.kill();
         }, this);
         killTween.start();
+
+        score ++;
+        scoreText.setText('Score: '+score);
+
         var countAlive = 0;
         for (var i=0; i<bricks.children.length; i++) {
           if (bricks.children[i].alive == true) {
             countAlive++;
           }
         }
+        console.log(countAlive);
         if (countAlive == 0) {
           alert('You won the game, congratulations!');
           location.reload();
